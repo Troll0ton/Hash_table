@@ -1,13 +1,6 @@
 #include "../include/hash_table.h"
 
 //-----------------------------------------------------------------------------
-/*
-void list_ctor (List *list)
-{
-
-}
-*/
-//-----------------------------------------------------------------------------
 
 void list_dtor (List *list)
 {
@@ -80,10 +73,10 @@ void push_head (Node *new_node, List *list)
 
 void insert_node (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char *line))
 {
+    uint32_t i = calc_hash (line);
+
     Node *new_node = (Node*) calloc (1, sizeof (Node));
     new_node->line = line;
-
-    uint32_t i = calc_hash (line);
     push_head (new_node, &hash_table.bucket[i]);
 }
 
@@ -119,41 +112,81 @@ void hash_table_dump (Hash_table hash_table)
         printf ("(bucket %d): %u\n", i, find_list_size (&hash_table.bucket[i]));
     }
 
-    /*
-    FILE *graph = fopen ("graph.py", "w+");
-
-    fprintf (graph, "import matplotlib as mpl\n"
-                    "import matplotlib.pyplot as plt\n"
-                    "import numpy as np\n\n"
-                    "plt.axis ([0, 1010000, 0, 0.0226])\n\n");
-
-    fprintf (file, "plt.plot ([");
-
-    for(int i = 100000; i < 1000000; i+=100000)
-    {
-        fprintf (file, "%d, ", i);
-    }
-
-    fprintf (file, "], [");
-
-    for(int size = 10; size < 100; size+=10)
-    {
-        fprintf (file, "%lg, ", time);
-    }
-
-    fprintf (file, "])\n\n");
-
-    fclose (graph);
-    */
-
    printf ("__________________________________________________________________\n\n");
 }
 
 //-----------------------------------------------------------------------------
 
-void draw_graph (Hash_table *hash_table)
+void draw_compare_graph (Text *text)
 {
+    uint32_t (*hf[])(char *line) =
+    {
+        const_hf,
+        first_sym_hf,
+        len_hf,
+        sum_hf,
+        round_right_hf,
+        round_left_hf,
+        super_secret_hf
+    };
 
+    FILE *graph = fopen ("graph.py", "w+");
+
+    fprintf (graph, "import matplotlib as mpl\n"
+                    "import matplotlib.pyplot as plt\n"
+                    "import numpy as np\n\n"
+                    "plt.axis ([0, %u, 0, 10])\n\n",
+                    HASH_SIZE);
+
+    for(int i = 0; i < NUM_OF_HF; i++)
+    {
+        draw_one_function (text, hf[i], graph);
+    }
+
+    fprintf (graph, "plt.show()\n");
+
+    fclose (graph);
+}
+
+//-----------------------------------------------------------------------------
+
+void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph, char *hf_name)
+{
+    Hash_table hash_table = { 0 };
+    hash_table_ctor (&hash_table, HASH_SIZE);
+
+    for(unsigned int i = 0; i < text->size; i++)
+    {
+        insert_node (text->buffer[i], hash_table, calc_hash);
+    }
+
+    fprintf (graph, "plt.plot ([");
+
+    for(int i = 0; i < HASH_SIZE; i++)
+    {
+        fprintf (graph, "%d", i);
+
+        if(i != HASH_SIZE - 1)
+        {
+            fprintf (graph, ", ");
+        }
+    }
+
+    fprintf (graph, "], [");
+
+    for(int i = 0; i < HASH_SIZE; i++)
+    {
+        fprintf (graph, "%u", find_list_size (&hash_table.bucket[i]));
+
+        if(i != HASH_SIZE - 1)
+        {
+            fprintf (graph, ", ");
+        }
+    }
+
+    fprintf (graph, "])\n");
+
+    hash_table_dtor (&hash_table);
 }
 
 //-----------------------------------------------------------------------------

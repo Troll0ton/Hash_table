@@ -14,14 +14,6 @@
 
 //-----------------------------------------------------------------------------
 
-typedef struct Text
-{
-    char **buffer;
-    unsigned int size;
-} Text;
-
-//-----------------------------------------------------------------------------
-
 char *file_reader (FILE *file);
 unsigned int find_file_size (FILE *file);
 unsigned int find_num_of_words (char *buffer);

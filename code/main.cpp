@@ -12,26 +12,9 @@ int main()
 
     Text *text = buffer_separator (buffer);
 
-    /*
-    for(unsigned int i = 0; i < text->size; i++)
-    {
-        printf ("%s\n", text->buffer[i]);
-    }
-    */
+    printf ("SUCCESS - reading %u words\n", text->size);
 
-    Hash_table hash_table = { 0 };
-    hash_table_ctor (&hash_table, HASH_SIZE);
-
-    for(unsigned int i = 0; i < text->size; i++)
-    {
-        insert_node (text->buffer[i], hash_table, &super_secret_hf);
-    }
-
-    //hash_table_dump (hash_table);
-
-    //Node *curr_node = search_line (line, hash_table, &const_hf);
-    
-    hash_table_dtor (&hash_table);
+    draw_compare_graph (text);
 
     free (text->buffer);
     free (text);
