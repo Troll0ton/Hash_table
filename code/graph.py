@@ -2,7 +2,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.axis ([0, 10, 0, 32000])
+plt.axis ([0, 10, 0, 10])
 
 plt.plot ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 32071, 0, 0, 0, 0, 0, 0, 0, 0])
 plt.plot ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [2290, 3039, 2729, 1672, 2782, 4138, 4191, 3684, 2526, 5020])
