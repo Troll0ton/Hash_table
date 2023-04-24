@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-g -c -Wall
+CFLAGS=-O2 -c
 LDFLAGS=
 SOURCES=main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp
 OBJECTS=$(SOURCES:.cpp=.o)

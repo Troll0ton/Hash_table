@@ -73,6 +73,11 @@ void push_head (Node *new_node, List *list)
 
 void insert_node (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char *line))
 {
+    if(search_line (line, hash_table, calc_hash))
+    {
+        return;
+    }
+
     uint32_t i = calc_hash (line);
 
     Node *new_node = (Node*) calloc (1, sizeof (Node));
@@ -117,25 +122,50 @@ void hash_table_dump (Hash_table hash_table)
 
 //-----------------------------------------------------------------------------
 
+void search_all (Text *text)
+{
+    Hash_table hash_table = { 0 };
+    hash_table_ctor (&hash_table, HASH_SIZE);
+
+    for(unsigned int i = 0; i < text->size; i++)
+    {
+        insert_node (text->buffer[i], hash_table, super_secret_hf);
+    }
+
+    for(int i = 0; i < 100; i++)
+    {
+        for(int j = 0; j < text->size; j++)
+        {
+            search_line (text->buffer[i], hash_table, super_secret_hf);
+        }
+    }
+
+    hash_table_dtor (&hash_table);
+}
+
+//-----------------------------------------------------------------------------
+
 void draw_compare_graph (Text *text)
 {
     uint32_t (*hf[])(char *line) =
     {
-        const_hf,
-        first_sym_hf,
-        len_hf,
-        sum_hf,
-        round_right_hf,
-        round_left_hf,
-        super_secret_hf
+        //const_hf,
+        //first_sym_hf,
+        //len_hf,
+        //sum_hf,
+        //round_right_hf,
+        //round_left_hf,
+        super_secret_hf,
     };
+
+    const int NUM_OF_HF = 1;
 
     FILE *graph = fopen ("graph.py", "w+");
 
     fprintf (graph, "import matplotlib as mpl\n"
                     "import matplotlib.pyplot as plt\n"
                     "import numpy as np\n\n"
-                    "plt.axis ([0, %u, 0, 10])\n\n",
+                    "plt.axis ([0, %u, 0, 20])\n\n",
                     HASH_SIZE);
 
     for(int i = 0; i < NUM_OF_HF; i++)
@@ -160,7 +190,7 @@ void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *gr
         insert_node (text->buffer[i], hash_table, calc_hash);
     }
 
-    fprintf (graph, "plt.plot ([");
+    fprintf (graph, "plt.bar ([");
 
     for(int i = 0; i < HASH_SIZE; i++)
     {

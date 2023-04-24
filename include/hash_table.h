@@ -38,10 +38,6 @@ typedef struct Hash_table
 
 //-----------------------------------------------------------------------------
 
-#define NUM_OF_HF 7
-
-//-----------------------------------------------------------------------------
-
 #define draw_one_function(text, hf_name, graph) draw_one_function_ (text, hf_name, graph, #hf_name)
 
 //-----------------------------------------------------------------------------
@@ -60,6 +56,8 @@ Node *search_line (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char
 void draw_compare_graph (Text *text);
 void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph, char *hf_name);
 void hash_table_dump (Hash_table hash_table);
+
+void search_all (Text *text);
 
 //-----------------------------------------------------------------------------
 
