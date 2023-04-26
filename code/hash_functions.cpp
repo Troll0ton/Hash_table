@@ -89,20 +89,3 @@ unsigned int superSecretHf (char *line)
 }
 
 //-----------------------------------------------------------------------------
-
-unsigned int superSecretHf256Bit (__m256i *line)
-{
-    unsigned int hash_sum = 0;
-    unsigned int hash_par = 1;
-    unsigned int hash_base = hash_size + 1;
-
-    for(unsigned int i = 0; i < 32; i++)
-    {
-        hash_sum += (unsigned int) (((char*)(line))[i]) * hash_par;
-        hash_par *= hash_base;
-    }
-
-    return (hash_sum % hash_size);
-}
-
-//-----------------------------------------------------------------------------

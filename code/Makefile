@@ -1,14 +1,6 @@
-CC=g++
-CFLAGS=-O2 -c -mavx -mavx512dq
-LDFLAGS=
-SOURCES=main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp text_utils.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=app
+compile: main.cpp
+	g++ -c -mavx -mavx512dq main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp text_utils.cpp
+	g++ main.o hash_table.o hash_functions.o input_utils.o text_utils.o
 
-all: $(SOURCES) $(EXECUTABLE)
-	
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
-
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
+run:
+	./app

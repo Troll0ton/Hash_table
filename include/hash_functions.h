@@ -25,8 +25,6 @@ unsigned int roundRightHf (char *line);
 unsigned int roundLeftHf (char *line);
 unsigned int superSecretHf (char *line);
 
-unsigned int superSecretHf256Bit (__m256i *line);
-
 //-----------------------------------------------------------------------------
 
 #endif //HASH_FUNCTIONS_H
