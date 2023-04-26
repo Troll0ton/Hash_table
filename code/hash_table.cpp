@@ -73,11 +73,6 @@ void pushHead (Node *new_node, List *list)
 
 void insertNode (char *line, Hash_table hash_table, unsigned int hash_val)
 {
-    if(searchLine (line, hash_table, hash_val))
-    {
-        return;
-    }
-
     Node *new_node = (Node*) calloc (1, sizeof (Node));
     new_node->line = line;
     pushHead (new_node, &hash_table.bucket[hash_val]);
@@ -158,11 +153,7 @@ void searchingAll256 (Text_256 *text_256)
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
 
-    for(unsigned int i = 0; i < text_256->size; i++)
-    {
-        unsigned hash_val = superSecretHf256Bit (&text_256->buffer[i]);
-        insertNode ((char*)(&text_256->buffer[i]), hash_table, hash_val);
-    }
+    fillHashTable256 (hash_table, text_256);
 
     for(int i = 0; i < num_of_searchs; i++)
     {
@@ -177,6 +168,53 @@ void searchingAll256 (Text_256 *text_256)
 }
 
 //-----------------------------------------------------------------------------
+
+void fillHashTable256 (Hash_table hash_table, Text_256 *text_256)
+{
+    for(unsigned int i = 0; i < text_256->size; i++)
+    {
+        unsigned hash_val = superSecretHf256Bit (&text_256->buffer[i]);
+        
+        if(searchLine (line, hash_table, hash_val))
+        {
+            continue;
+        }
+
+        insertNode ((char*)(&text_256->buffer[i]), hash_table, hash_val);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void searchingAll (Text *text)
+{
+    Hash_table hash_table = { 0 };
+    hashTableCtor (&hash_table, hash_size);
+
+    fillHashTableOrd (hash_table, text);
+
+    for(int i = 0; i < num_of_searchs; i++)
+    {
+        for(int j = 0; j < text->size; j++)
+        {
+            unsigned hash_val = superSecretHf (text->buffer[i]);
+            searchLine (text->buffer[i], hash_table, hash_val);
+        }
+    }
+
+    hashTableDtor (&hash_table);
+}
+
+//-----------------------------------------------------------------------------
+
+void fillHashTableOrd (Hash_table hash_table, Text *text)
+{
+    for(unsigned int i = 0; i < text->size; i++)
+    {
+        unsigned hash_val = superSecretHf (text->buffer[i]);
+        insertNode (text->buffer[i], hash_table, hash_val);
+    }
+}
 
 //-----------------------------------------------------------------------------
 

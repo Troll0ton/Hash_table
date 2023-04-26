@@ -54,9 +54,11 @@ void pushHead (char *line, List *list);
 void insertNode (char *line, Hash_table hash_table, unsigned int hash_val);
 
 void searchingAll (Text *text);
+void fillHashTableOrd (Hash_table hash_table, Text *text);
 Node *searchLine (char *line, Hash_table hash_table, unsigned int hash_val);
 
 void searchingAll256 (Text_256 *text_256);
+void fillHashTable256 (Hash_table hash_table, Text_256 *text_256);
 Node *searchLine256Bit (__m256i *line, Hash_table hash_table, unsigned int hash_val);
 
 inline size_t strCmpAVX (__m256i str_1, __m256i str_2);
