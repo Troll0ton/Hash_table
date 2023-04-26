@@ -19,8 +19,8 @@ int main()
     printf ("SUCCESS - translating to 256-bit format\n");
 
     //compareHashFunctions (text);
-    //searchingAll (text);
-    searchingAll256 (text_256);
+    searchingAll (text);
+    //searchingAll256 (text_256);
     printf ("SUCCESS - process finished\n");
 
     textDtor (text);

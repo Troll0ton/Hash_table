@@ -71,6 +71,21 @@ void pushHead (Node *new_node, List *list)
 
 //-----------------------------------------------------------------------------
 
+void hashTableDump (Hash_table hash_table)
+{
+    printf ("___________________________ HASH TABLE ___________________________\n\n"
+            "SIZE: %u\n\n", hash_table.size                                         );
+
+    for(unsigned int i = 0; i < hash_table.size; i++)
+    {
+        printf ("(bucket %d): %u\n", i, findListSize (&hash_table.bucket[i]));
+    }
+
+   printf ("__________________________________________________________________\n\n");
+}
+
+//-----------------------------------------------------------------------------
+
 void insertNode (char *line, Hash_table hash_table, unsigned int hash_val)
 {
     Node *new_node = (Node*) calloc (1, sizeof (Node));
@@ -133,27 +148,16 @@ inline size_t strCmpAVX (__m256i str_1, __m256i str_2)
 
 //-----------------------------------------------------------------------------
 
-void hashTableDump (Hash_table hash_table)
-{
-    printf ("___________________________ HASH TABLE ___________________________\n\n"
-            "SIZE: %u\n\n", hash_table.size                                         );
-
-    for(unsigned int i = 0; i < hash_table.size; i++)
-    {
-        printf ("(bucket %d): %u\n", i, findListSize (&hash_table.bucket[i]));
-    }
-
-   printf ("__________________________________________________________________\n\n");
-}
-
-//-----------------------------------------------------------------------------
-
 void searchingAll256 (Text_256 *text_256)
 {
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
 
-    fillHashTable256 (hash_table, text_256);
+    for(unsigned int i = 0; i < text_256->size; i++)
+    {
+        unsigned hash_val = superSecretHf256Bit (&text_256->buffer[i]);
+        insertNode ((char*)(&text_256->buffer[i]), hash_table, hash_val);
+    }
 
     for(int i = 0; i < num_of_searchs; i++)
     {
@@ -169,29 +173,16 @@ void searchingAll256 (Text_256 *text_256)
 
 //-----------------------------------------------------------------------------
 
-void fillHashTable256 (Hash_table hash_table, Text_256 *text_256)
-{
-    for(unsigned int i = 0; i < text_256->size; i++)
-    {
-        unsigned hash_val = superSecretHf256Bit (&text_256->buffer[i]);
-        
-        if(searchLine (line, hash_table, hash_val))
-        {
-            continue;
-        }
-
-        insertNode ((char*)(&text_256->buffer[i]), hash_table, hash_val);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void searchingAll (Text *text)
 {
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
 
-    fillHashTableOrd (hash_table, text);
+    for(unsigned int i = 0; i < text->size; i++)
+    {
+        unsigned hash_val = superSecretHf (text->buffer[i]);
+        insertNode (text->buffer[i], hash_table, hash_val);
+    }
 
     for(int i = 0; i < num_of_searchs; i++)
     {
@@ -203,17 +194,6 @@ void searchingAll (Text *text)
     }
 
     hashTableDtor (&hash_table);
-}
-
-//-----------------------------------------------------------------------------
-
-void fillHashTableOrd (Hash_table hash_table, Text *text)
-{
-    for(unsigned int i = 0; i < text->size; i++)
-    {
-        unsigned hash_val = superSecretHf (text->buffer[i]);
-        insertNode (text->buffer[i], hash_table, hash_val);
-    }
 }
 
 //-----------------------------------------------------------------------------
