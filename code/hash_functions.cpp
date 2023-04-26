@@ -4,28 +4,28 @@
 // hf <=> hash function
 //-----------------------------------------------------------------------------
 
-unsigned int const_hf (char *line)
+unsigned int constHf (char *line)
 {
     return 1;
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int first_sym_hf (char *line)
+unsigned int firstSymHf (char *line)
 {
-    return (line[0] % HASH_SIZE);
+    return (line[0] % hash_size);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int len_hf (char *line)
+unsigned int lenHf (char *line)
 {
-    return (strlen (line) % HASH_SIZE);
+    return (strlen (line) % hash_size);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int sum_hf (char *line)
+unsigned int sumHf (char *line)
 {
     unsigned int hash_sum = 0;
     unsigned int line_len = strlen (line);
@@ -35,12 +35,12 @@ unsigned int sum_hf (char *line)
         hash_sum = (hash_sum + line[i]);
     }
 
-    return (hash_sum % HASH_SIZE);
+    return (hash_sum % hash_size);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int round_right_hf (char *line)
+unsigned int roundRightHf (char *line)
 {
     unsigned int hash_sum = 0;
     unsigned int line_len = strlen (line);
@@ -51,12 +51,12 @@ unsigned int round_right_hf (char *line)
         hash_sum ^= line[i];
     }
 
-    return (hash_sum % HASH_SIZE);
+    return (hash_sum % hash_size);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int round_left_hf (char *line)
+unsigned int roundLeftHf (char *line)
 {
     unsigned int hash_sum = 0;
     unsigned int line_len = strlen (line);
@@ -67,16 +67,16 @@ unsigned int round_left_hf (char *line)
         hash_sum ^= line[i];
     }
 
-    return (hash_sum % HASH_SIZE);
+    return (hash_sum % hash_size);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int super_secret_hf (char *line)
+unsigned int superSecretHf (char *line)
 {
     unsigned int hash_sum = 0;
     unsigned int hash_par = 1;
-    unsigned int hash_base = HASH_SIZE + 1;
+    unsigned int hash_base = hash_size + 1;
     unsigned int line_len = strlen (line);
 
     for(unsigned int i = 0; i < line_len; i++)
@@ -85,23 +85,24 @@ unsigned int super_secret_hf (char *line)
         hash_par *= hash_base;
     }
 
-    return (hash_sum % HASH_SIZE);
+    return (hash_sum % hash_size);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int horner_hf (char *line)
+unsigned int superSecretHf256Bit (__m256i *line)
 {
     unsigned int hash_sum = 0;
+    unsigned int hash_par = 1;
+    unsigned int hash_base = hash_size + 1;
 
-    for (int i = 0; line[i] != '\0'; i++)
+    for(unsigned int i = 0; i < 32; i++)
     {
-        hash_sum = ((HASH_SIZE + 1) * hash_sum + line[i]) % HASH_SIZE;
+        hash_sum += (unsigned int) (((char*)(line))[i]) * hash_par;
+        hash_par *= hash_base;
     }
-    
-    hash_sum = (hash_sum * 2 + 1) % HASH_SIZE;
 
-    return hash_sum;
+    return (hash_sum % hash_size);
 }
 
 //-----------------------------------------------------------------------------

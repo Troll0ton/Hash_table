@@ -38,26 +38,32 @@ typedef struct Hash_table
 
 //-----------------------------------------------------------------------------
 
-#define draw_one_function(text, hf_name, graph) draw_one_function_ (text, hf_name, graph, #hf_name)
+const int num_of_searchs = 500;
+const int num_of_hf = 3;
+const unsigned int y_len = 20;
 
 //-----------------------------------------------------------------------------
 
-void list_dtor (List *list);
-unsigned int find_list_size (List *list);
+void listDtor (List *list);
+unsigned int findListSize (List *list);
 
-void hash_table_ctor (Hash_table *hash_table, uint32_t size);
-void hash_table_dtor (Hash_table *hash_table);
+void hashTableCtor (Hash_table *hash_table, uint32_t size);
+void hashTableDtor (Hash_table *hash_table);
 
-void push_head (char *line, List *list);
+void pushHead (char *line, List *list);
+void insertNode (char *line, Hash_table hash_table, unsigned int hash_val);
 
-void insert_node (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char *line));
-Node *search_line (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char *line));
+void searchingAll (Text *text);
+Node *searchLine (char *line, Hash_table hash_table, unsigned int hash_val);
 
-void draw_compare_graph (Text *text);
-void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph, char *hf_name);
-void hash_table_dump (Hash_table hash_table);
+void searchingAll256 (Text_256 *text_256);
+Node *searchLine256Bit (__m256i *line, Hash_table hash_table, unsigned int hash_val);
 
-void search_all (Text *text);
+inline size_t strCmpAVX (__m256i str_1, __m256i str_2);
+
+void compareHashFunctions (Text *text);
+void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph);
+void hashTableDump (Hash_table hash_table);
 
 //-----------------------------------------------------------------------------
 

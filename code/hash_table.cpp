@@ -2,7 +2,7 @@
 
 //-----------------------------------------------------------------------------
 
-void list_dtor (List *list)
+void listDtor (List *list)
 {
     Node *curr_node = list->head;
     Node *tmp_node = NULL;
@@ -18,7 +18,7 @@ void list_dtor (List *list)
 
 //-----------------------------------------------------------------------------
 
-unsigned int find_list_size (List *list)
+unsigned int findListSize (List *list)
 {
     Node *curr_node = list->head;
     unsigned int curr_len = 0;
@@ -34,7 +34,7 @@ unsigned int find_list_size (List *list)
 
 //-----------------------------------------------------------------------------
 
-void hash_table_ctor (Hash_table *hash_table, uint32_t size)
+void hashTableCtor (Hash_table *hash_table, uint32_t size)
 {
     hash_table->bucket = (List*) calloc (size, sizeof (List));
     hash_table->size   = size;
@@ -42,21 +42,21 @@ void hash_table_ctor (Hash_table *hash_table, uint32_t size)
 
 //-----------------------------------------------------------------------------
 
-void hash_table_dtor (Hash_table *hash_table)
+void hashTableDtor (Hash_table *hash_table)
 {
     for(unsigned int i = 0; i < hash_table->size; i++)
     {
-        list_dtor (&hash_table->bucket[i]);
+        listDtor (&hash_table->bucket[i]);
     }
 
     free (hash_table->bucket);
 
-    hash_table->size = DELETED_PAR;
+    hash_table->size = deleted_par;
 }
 
 //-----------------------------------------------------------------------------
 
-void push_head (Node *new_node, List *list)
+void pushHead (Node *new_node, List *list)
 {
     if(!HEAD)
     {
@@ -71,26 +71,23 @@ void push_head (Node *new_node, List *list)
 
 //-----------------------------------------------------------------------------
 
-void insert_node (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char *line))
+void insertNode (char *line, Hash_table hash_table, unsigned int hash_val)
 {
-    if(search_line (line, hash_table, calc_hash))
+    if(searchLine (line, hash_table, hash_val))
     {
         return;
     }
 
-    uint32_t i = calc_hash (line);
-
     Node *new_node = (Node*) calloc (1, sizeof (Node));
     new_node->line = line;
-    push_head (new_node, &hash_table.bucket[i]);
+    pushHead (new_node, &hash_table.bucket[hash_val]);
 }
 
 //-----------------------------------------------------------------------------
 
-Node *search_line (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char *line))
+Node *searchLine (char *line, Hash_table hash_table, unsigned int hash_val)
 {
-    uint32_t i = calc_hash (line);
-    Node *curr_node = hash_table.bucket[i].head;
+    Node *curr_node = hash_table.bucket[hash_val].head;
 
     while(curr_node)
     {
@@ -107,14 +104,48 @@ Node *search_line (char *line, Hash_table hash_table, uint32_t (*calc_hash)(char
 
 //-----------------------------------------------------------------------------
 
-void hash_table_dump (Hash_table hash_table)
+Node *searchLine256Bit (__m256i *line, Hash_table hash_table, unsigned int hash_val)
+{
+    Node *curr_node = hash_table.bucket[hash_val].head;
+
+    while(curr_node)
+    {
+        if(!strCmpAVX (*((__m256i*)(curr_node->line)), *line))
+        {
+            return curr_node;
+        }
+
+        curr_node = curr_node->next;
+    }
+
+    return NULL;
+}
+
+//-----------------------------------------------------------------------------
+
+inline size_t strCmpAVX (__m256i str_1, __m256i str_2)
+{
+    __m256i cmp = _mm256_cmpeq_epi8 (str_1, str_2);
+    int mask = _mm256_movemask_epi8 (cmp);
+
+    if(mask == 0xffffffff) 
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+//-----------------------------------------------------------------------------
+
+void hashTableDump (Hash_table hash_table)
 {
     printf ("___________________________ HASH TABLE ___________________________\n\n"
             "SIZE: %u\n\n", hash_table.size                                         );
 
     for(unsigned int i = 0; i < hash_table.size; i++)
     {
-        printf ("(bucket %d): %u\n", i, find_list_size (&hash_table.bucket[i]));
+        printf ("(bucket %d): %u\n", i, findListSize (&hash_table.bucket[i]));
     }
 
    printf ("__________________________________________________________________\n\n");
@@ -122,55 +153,58 @@ void hash_table_dump (Hash_table hash_table)
 
 //-----------------------------------------------------------------------------
 
-void search_all (Text *text)
+void searchingAll256 (Text_256 *text_256)
 {
     Hash_table hash_table = { 0 };
-    hash_table_ctor (&hash_table, HASH_SIZE);
+    hashTableCtor (&hash_table, hash_size);
 
-    for(unsigned int i = 0; i < text->size; i++)
+    for(unsigned int i = 0; i < text_256->size; i++)
     {
-        insert_node (text->buffer[i], hash_table, super_secret_hf);
+        unsigned hash_val = superSecretHf256Bit (&text_256->buffer[i]);
+        insertNode ((char*)(&text_256->buffer[i]), hash_table, hash_val);
     }
 
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < num_of_searchs; i++)
     {
-        for(int j = 0; j < text->size; j++)
+        for(int j = 0; j < text_256->size; j++)
         {
-            search_line (text->buffer[i], hash_table, super_secret_hf);
+            unsigned hash_val = superSecretHf256Bit (&text_256->buffer[i]);
+            searchLine256Bit (&text_256->buffer[i], hash_table, hash_val);
         }
     }
 
-    hash_table_dtor (&hash_table);
+    hashTableDtor (&hash_table);
 }
 
 //-----------------------------------------------------------------------------
 
-void draw_compare_graph (Text *text)
+//-----------------------------------------------------------------------------
+
+void compareHashFunctions (Text *text)
 {
     uint32_t (*hf[])(char *line) =
     {
-        //const_hf,
-        //first_sym_hf,
-        //len_hf,
-        //sum_hf,
-        //round_right_hf,
-        //round_left_hf,
-        super_secret_hf,
+        //constHf,
+        //firstSymHf,
+        //lenHf,
+        //sumHf,
+        //roundRightHf,
+        roundLeftHf,
+        superSecretHf,
     };
-
-    const int NUM_OF_HF = 1;
 
     FILE *graph = fopen ("graph.py", "w+");
 
     fprintf (graph, "import matplotlib as mpl\n"
                     "import matplotlib.pyplot as plt\n"
                     "import numpy as np\n\n"
-                    "plt.axis ([0, %u, 0, 20])\n\n",
-                    HASH_SIZE);
+                    "plt.axis ([0, %u, 0, %u])\n\n",
+                    hash_size, y_len);
+                    //x_len
 
-    for(int i = 0; i < NUM_OF_HF; i++)
+    for(int i = 0; i < num_of_hf; i++)
     {
-        draw_one_function (text, hf[i], graph);
+        drawOneFunctionGraph (text, hf[i], graph);
     }
 
     fprintf (graph, "plt.show()\n");
@@ -180,23 +214,24 @@ void draw_compare_graph (Text *text)
 
 //-----------------------------------------------------------------------------
 
-void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph, char *hf_name)
+void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph)
 {
     Hash_table hash_table = { 0 };
-    hash_table_ctor (&hash_table, HASH_SIZE);
+    hashTableCtor (&hash_table, hash_size);
 
     for(unsigned int i = 0; i < text->size; i++)
     {
-        insert_node (text->buffer[i], hash_table, calc_hash);
+        unsigned hash_val = calc_hash (text->buffer[i]);
+        insertNode (text->buffer[i], hash_table, hash_val);
     }
 
     fprintf (graph, "plt.bar ([");
 
-    for(int i = 0; i < HASH_SIZE; i++)
+    for(int i = 0; i < hash_size; i++)
     {
         fprintf (graph, "%d", i);
 
-        if(i != HASH_SIZE - 1)
+        if(i != hash_size - 1)
         {
             fprintf (graph, ", ");
         }
@@ -204,11 +239,11 @@ void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *gr
 
     fprintf (graph, "], [");
 
-    for(int i = 0; i < HASH_SIZE; i++)
+    for(int i = 0; i < hash_size; i++)
     {
-        fprintf (graph, "%u", find_list_size (&hash_table.bucket[i]));
+        fprintf (graph, "%u", findListSize (&hash_table.bucket[i]));
 
-        if(i != HASH_SIZE - 1)
+        if(i != hash_size - 1)
         {
             fprintf (graph, ", ");
         }
@@ -216,7 +251,7 @@ void draw_one_function_ (Text *text, uint32_t (*calc_hash)(char *line), FILE *gr
 
     fprintf (graph, "])\n");
 
-    hash_table_dtor (&hash_table);
+    hashTableDtor (&hash_table);
 }
 
 //-----------------------------------------------------------------------------

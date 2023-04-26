@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-O2 -c
+CFLAGS=-O2 -c -mavx -mavx512dq
 LDFLAGS=
-SOURCES=main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp
+SOURCES=main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp text_utils.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=app
 

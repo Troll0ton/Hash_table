@@ -17,14 +17,15 @@ enum Hash_pars
 
 //-----------------------------------------------------------------------------
 
-unsigned int const_hf (char *line);
-unsigned int first_sym_hf (char *line);
-unsigned int len_hf (char *line);
-unsigned int sum_hf (char *line);
-unsigned int round_right_hf (char *line);
-unsigned int round_left_hf (char *line);
-unsigned int super_secret_hf (char *line);
-unsigned int horner_hf (char *line);
+unsigned int constHf (char *line);
+unsigned int firstSymHf (char *line);
+unsigned int lenHf (char *line);
+unsigned int sumHf (char *line);
+unsigned int roundRightHf (char *line);
+unsigned int roundLeftHf (char *line);
+unsigned int superSecretHf (char *line);
+
+unsigned int superSecretHf256Bit (__m256i *line);
 
 //-----------------------------------------------------------------------------
 
