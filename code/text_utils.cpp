@@ -50,13 +50,15 @@ Text_256 *strTranslator256Bits (Text *text)
 {
     Text_256 *text_256 = text256Ctor (text->size);
 
-    alignas(32) char tmp_str[32] = {};
+    //alignas(32) char tmp_str[32] = "";
 
     for(unsigned int i = 0; i < text->size; i++)
     {
-        strncpy (tmp_str, text->buffer[i], 32); //Forget about 32+ len words correct
+        //strcpy (tmp_str, text->buffer[i]); 
 
-        text_256->buffer[i] = _mm256_load_si256 ((__m256i*) tmp_str);
+        int len = strlen (text->buffer[i]);
+
+        memcpy (&text_256->buffer[i], text->buffer[i], len);
     } 
 
     return text_256;

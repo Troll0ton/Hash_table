@@ -38,7 +38,7 @@ typedef struct Hash_table
 
 //-----------------------------------------------------------------------------
 
-const int num_of_searchs = 500;
+const int num_of_searchs = 300;
 const int num_of_hf = 1;
 const unsigned int y_len = 20;
 
@@ -54,20 +54,20 @@ void pushHead (char *line, List *list);
 void insertNode (char *line, Hash_table hash_table, unsigned int hash_val);
 
 void searchingAll (Text *text);
-void searchingAll256 (Text_256 *text_256);
+void searchingAll256 (Text_256 *text_256, Text *text);
 
 void fillHashTable (char **buffer, 
                     unsigned int size,
                     Hash_table hash_table, 
                     uint32_t (*calc_hash)(char *line),
-                    int (*comp_funct)(const char *s1, const char *s2, size_t n));
+                    int (*comp_funct)(const char *s1, const char *s2));
 
 Node *searchLine (char *line,     
                   Hash_table hash_table, 
                   unsigned int hash_val, 
-                  int (*comp_funct)(const char *s1, const char *s2, size_t n));
+                  int (*comp_funct)(const char *s1, const char *s2));
 
-inline int strcmpAvx (const char *s1, const char *s2, size_t n);
+int strcmpAvx (const char *s1, const char *s2);
 
 void compareHashFunctions (Text *text);
 void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph);

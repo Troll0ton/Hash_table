@@ -105,16 +105,16 @@ void insertNode (char *line, Hash_table hash_table, unsigned int hash_val)
 
 //-----------------------------------------------------------------------------
 
-Node *searchLine (char        *line,     
+Node *searchLine (char *line,     
                   Hash_table hash_table, 
                   unsigned int hash_val, 
-                  int (*comp_funct)(const char *s1, const char *s2, size_t n))
+                  int (*comp_funct)(const char *s1, const char *s2))
 {
     Node *curr_node = hash_table.bucket[hash_val].head;
 
     while(curr_node)
     {       //strCmpAVX //strncmp
-        if(!comp_funct (curr_node->line, line, strlen (line)))
+        if(!comp_funct (curr_node->line, line))
         {
             return curr_node;
         }
@@ -127,25 +127,65 @@ Node *searchLine (char        *line,
 
 //-----------------------------------------------------------------------------
 
-inline int strcmpAvx (const char *s1, const char *s2, size_t n)
+int strcmpAvx (const char *s1, const char *s2)
 {
     __m256i str_1_avx = * (__m256i*) s1;
     __m256i str_2_avx = * (__m256i*) s2;
 
     int cmp_mask = _mm256_testnzc_si256 (str_1_avx, str_2_avx);
 
-    return cmp_mask; 
+    return cmp_mask;
 }
+
 //-----------------------------------------------------------------------------
 
-void searchingAll256 (Text_256 *text_256)
+void searchingAll (Text *text)
 {
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
 
-    for(unsigned int i = 0; i < text_256->size; i++)
+    for(int i = 0; i < text->size; i++) //Fill hash table with hamlet (current hash function - superSecretHf)
     {
-        unsigned hash_val = superSecretHf ((char*) &text_256->buffer[i]);
+        unsigned hash_val = superSecretHf (text->buffer[i]);
+
+        if(searchLine (text->buffer[i], hash_table, hash_val, strcmp))
+        {
+            continue;
+        }
+
+        insertNode (text->buffer[i], hash_table, hash_val);
+    } 
+
+    //hashTableDump (hash_table);
+
+    for(int i = 0; i < text->size; i++)
+    {
+        unsigned hash_val = superSecretHf (text->buffer[i]); //Calculate key of current line in hash table
+
+        for(int j = 0; j < num_of_searchs; j++) //Now search it three hundred times
+        {
+            Node *node = searchLine (text->buffer[i], hash_table, hash_val, strcmp);
+
+            if(!node) //Also we need to avoid O2 roma stunts (цыганские фокусы)
+            {
+                printf ("ERROR - missed node!\n");
+            }
+        }
+    }
+
+    hashTableDtor (&hash_table); 
+}
+
+//-----------------------------------------------------------------------------
+
+void searchingAll256 (Text_256 *text_256, Text *text) //The same method but now operates with 256-bits regs
+{
+    Hash_table hash_table = { 0 };
+    hashTableCtor (&hash_table, hash_size);
+
+    for(int i = 0; i < text_256->size; i++) 
+    {
+        unsigned hash_val = superSecretHf (text->buffer[i]);
 
         if(searchLine ((char*) &text_256->buffer[i], hash_table, hash_val, strcmpAvx))
         {
@@ -157,40 +197,24 @@ void searchingAll256 (Text_256 *text_256)
 
     //hashTableDump (hash_table);
 
-    for(int i = 0; i < num_of_searchs; i++)
+    for(int i = 0; i < text_256->size; i++)
     {
-        for(int j = 0; j < text_256->size; j++)
+        unsigned hash_val = superSecretHf (text->buffer[i]);
+
+        for(int j = 0; j < num_of_searchs; j++)
         {
-            unsigned hash_val = superSecretHf ((char*) &text_256->buffer[j]);
-            searchLine ((char*) &text_256->buffer[j], hash_table, hash_val, strcmpAvx);
+            Node *node = searchLine ((char*) &text_256->buffer[i], hash_table, hash_val, strcmpAvx);
+
+            if(!node)
+            {
+                printf ("ERROR - missed node!\n");
+            }
         }
     }
 
     hashTableDtor (&hash_table);
 }
 
-//-----------------------------------------------------------------------------
-
-void searchingAll (Text *text)
-{
-    Hash_table hash_table = { 0 };
-    hashTableCtor (&hash_table, hash_size);
-
-    fillHashTable (text->buffer, text->size, hash_table, superSecretHf, strncmp);
-
-    //hashTableDump (hash_table);
-
-    for(int i = 0; i < num_of_searchs; i++)
-    {
-        for(int j = 0; j < text->size; j++)
-        {
-            unsigned hash_val = superSecretHf (text->buffer[j]);
-            searchLine (text->buffer[j], hash_table, hash_val, strncmp);
-        }
-    }
-
-    hashTableDtor (&hash_table);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -233,7 +257,7 @@ void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
 
-    fillHashTable (text->buffer, text->size, hash_table, calc_hash, strncmp);
+    fillHashTable (text->buffer, text->size, hash_table, calc_hash, strcmp);
     fillInDataGraph (hash_table, graph);
 
     hashTableDtor (&hash_table);
@@ -276,7 +300,7 @@ void fillHashTable (char **buffer,
                     unsigned int size,
                     Hash_table hash_table, 
                     uint32_t (*calc_hash)(char *line),
-                    int (*comp_funct)(const char *s1, const char *s2, size_t n))
+                    int (*comp_funct)(const char *s1, const char *s2))
 {
     for(unsigned int i = 0; i < size; i++)
     {

@@ -20,7 +20,7 @@ int main()
 
     //compareHashFunctions (text);
     //searchingAll (text);
-    searchingAll256 (text_256);
+    searchingAll256 (text_256, text);
     printf ("SUCCESS - process finished\n");
 
     textDtor (text);
