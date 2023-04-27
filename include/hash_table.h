@@ -38,8 +38,8 @@ typedef struct Hash_table
 
 //-----------------------------------------------------------------------------
 
-const int num_of_searchs = 300;
-const int num_of_hf = 1;
+const int num_of_searchs = 3000;
+const int num_of_hf = 3000;
 const unsigned int y_len = 20;
 
 //-----------------------------------------------------------------------------
@@ -51,29 +51,29 @@ void hashTableCtor (Hash_table *hash_table, uint32_t size);
 void hashTableDtor (Hash_table *hash_table);
 
 void pushHead (char *line, List *list);
-void insertNode (char *line, Hash_table hash_table, unsigned int hash_val);
+void insertNode (char *line, Hash_table *hash_table, unsigned int hash_val);
 
-void searchingAll (Text *text);
-void searchingAll256 (Text_256 *text_256, Text *text);
+void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2));
 
 void fillHashTable (char **buffer, 
                     unsigned int size,
-                    Hash_table hash_table, 
+                    Hash_table *hash_table, 
                     uint32_t (*calc_hash)(char *line),
                     int (*comp_funct)(const char *s1, const char *s2));
 
 Node *searchLine (char *line,     
-                  Hash_table hash_table, 
+                  Hash_table *hash_table, 
                   unsigned int hash_val, 
-                  int (*comp_funct)(const char *s1, const char *s2));
+                  int (*comp_funct)(const char *s1, const char *s2),
+                  int *total);
 
 int strcmpAvx (const char *s1, const char *s2);
 
 void compareHashFunctions (Text *text);
 void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *graph);
-void fillInDataGraph (Hash_table hash_table, FILE *graph);
+void fillInDataGraph (Hash_table *hash_table, FILE *graph);
 
-void hashTableDump (Hash_table hash_table);
+void hashTableDump (Hash_table *hash_table);
 
 //-----------------------------------------------------------------------------
 

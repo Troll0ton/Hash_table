@@ -11,11 +11,10 @@
 
 unsigned int findNumOfWords (char *buffer);
 Text *bufferSeparator (char *buffer);
-Text_256 *strTranslator256Bits (Text *text);
-Text *textCtor (char *buffer);
+char *strTranslator256Bits (Text *text);
+Text *bufferSeparator256Bit (char *buffer, int size);
+Text *textCtor (char *buffer, int size);
 void textDtor (Text *text);
-Text_256 *text256Ctor (unsigned int size);
-void text256Dtor (Text_256 *text_256);
 
 //-----------------------------------------------------------------------------
 

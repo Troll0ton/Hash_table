@@ -15,17 +15,21 @@ int main()
     Text *text = bufferSeparator (buffer);  //separate into words
     printf ("SUCCESS - separating %u words\n", text->size);
 
-    Text_256 *text_256 = strTranslator256Bits (text);  //translate to 256 bits format
+    char *buffer_256 = strTranslator256Bits (text);  //translate to 256 bits format
+    Text *text_256 = bufferSeparator256Bit (buffer_256, text->size);
     printf ("SUCCESS - translating to 256-bit format\n");
 
     //compareHashFunctions (text);
-    //searchingAll (text);
-    searchingAll256 (text_256, text);
+
+    searchingAll (text, strcmp);
+    //searchingAll (text_256, strcmpAvx);
+
     printf ("SUCCESS - process finished\n");
 
     textDtor (text);
-    text256Dtor (text_256);
+    textDtor (text_256);
     free (buffer);
+    free (buffer_256);
 
     return 0;
 }

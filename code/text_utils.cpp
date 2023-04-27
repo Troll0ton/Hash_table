@@ -7,7 +7,7 @@ unsigned int findNumOfWords (char *buffer)
     unsigned int num_of_words = 0;
     unsigned int i = 0;
 
-    while(buffer[i] != 0)
+    while(buffer[i] != '\0')
     {
         if(buffer[i] == '\n' || buffer[i] == ' ')
         {
@@ -24,7 +24,8 @@ unsigned int findNumOfWords (char *buffer)
 
 Text *bufferSeparator (char *buffer)
 {
-    Text *text = textCtor (buffer);
+    int size = findNumOfWords (buffer);
+    Text *text = textCtor (buffer, size);
 
     unsigned int curr_size = 0;
 
@@ -33,7 +34,8 @@ Text *bufferSeparator (char *buffer)
 
     for(unsigned int curr_pos = 0; curr_pos < str_lenght; curr_pos++)
     {
-        if(buffer[curr_pos] == '\n' || buffer[curr_pos] == ' ')
+        if((curr_pos - (curr_word - buffer) > 30)               || 
+           (buffer[curr_pos] == '\n' || buffer[curr_pos] == ' ')  )
         {
             buffer[curr_pos] = '\0';
             text->buffer[curr_size++] = curr_word;
@@ -46,31 +48,42 @@ Text *bufferSeparator (char *buffer)
 
 //-----------------------------------------------------------------------------
 
-Text_256 *strTranslator256Bits (Text *text)
+char *strTranslator256Bits (Text *text)
 {
-    Text_256 *text_256 = text256Ctor (text->size);
-
-    //alignas(32) char tmp_str[32] = "";
+    char *buffer = (char*) aligned_alloc (32, text->size * 32);
+    memset (buffer, 0, text->size * 32);
 
     for(unsigned int i = 0; i < text->size; i++)
     {
-        //strcpy (tmp_str, text->buffer[i]); 
+        strncpy (buffer + 32 * i, text->buffer[i], 32); 
 
         int len = strlen (text->buffer[i]);
-
-        memcpy (&text_256->buffer[i], text->buffer[i], len);
     } 
 
-    return text_256;
+    return buffer;
 }
 
 //-----------------------------------------------------------------------------
 
-Text *textCtor (char *buffer)
+Text *bufferSeparator256Bit (char *buffer, int size)
+{
+    Text *text = textCtor (buffer, size);
+
+    for(int i = 0; i < size; i++)
+    {
+        text->buffer[i] = buffer + 32 * i;
+    }
+
+    return text;
+}
+
+//-----------------------------------------------------------------------------
+
+Text *textCtor (char *buffer, int size)
 {
     Text *text = (Text*) calloc (1, sizeof (Text));
 
-    text->size = findNumOfWords (buffer);
+    text->size = size; 
     text->buffer = (char**) calloc (text->size, sizeof (char*));
     
     printf ("SUCCESS - text ctor\n");
@@ -88,33 +101,6 @@ void textDtor (Text *text)
     free (text);
 
     printf ("SUCCESS - text dtor\n");
-}
-
-//-----------------------------------------------------------------------------
-
-Text_256 *text256Ctor (unsigned int size)
-{
-    Text_256 *text_256 = (Text_256*) calloc (1, sizeof (Text_256)); 
-    text_256->size = size;
-
-    text_256->buffer = (__m256i*) aligned_alloc (32, size * sizeof (__m256i));
-    memset (text_256->buffer, 0, size * sizeof (__m256i));
-
-    printf ("SUCCESS - text_256 ctor\n");
-
-    return text_256;
-}
-
-//-----------------------------------------------------------------------------
-
-void text256Dtor (Text_256 *text_256)
-{
-    text_256->size = deleted_par;
-
-    free (text_256->buffer);
-    free (text_256);
-
-    printf ("SUCCESS - text_256 dtor\n");
 }
 
 //-----------------------------------------------------------------------------
