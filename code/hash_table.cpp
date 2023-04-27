@@ -156,7 +156,7 @@ void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2)
     hashTableCtor (&hash_table, hash_size);
                                                         //superSecretHf _trollohash //Crc32hf
     fillHashTable (text->buffer, text->size, &hash_table, Crc32hf, comp_funct);
-    
+
     //hashTableDump (hash_table);
 
     int total = 0;
@@ -197,7 +197,7 @@ void compareHashFunctions (Text *text)
         //constHf,
         //firstSymHf,
         //lenHf,
-        sumHf,
+        //sumHf,
         //roundRightHf,
         //roundLeftHf,
         superSecretHf,

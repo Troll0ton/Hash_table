@@ -19,10 +19,9 @@ int main()
     Text *text_256 = bufferSeparator256Bit (buffer_256, text->size);
     printf ("SUCCESS - translating to 256-bit format\n");
 
-    //compareHashFunctions (text);
-
+    compareHashFunctions (text);
     //searchingAll (text, strcmp);
-    searchingAll (text_256, strcmpAvx);
+    //searchingAll (text_256, strcmpAvx);
 
     printf ("SUCCESS - process finished\n");
 
