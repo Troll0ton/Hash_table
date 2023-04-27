@@ -3,7 +3,7 @@
 
 ![kek][me before hash table laba]
 
-[kek]: https://github.com/Troll0ton/Alpha_blending/blob/main/kek.jpg
+[kek]: https://github.com/Troll0ton/Hash_table/tree/main/images/kek.jpg
 
 ---
 
@@ -15,7 +15,7 @@
 
 ![hash][open hash]
 
-[hash]: https://github.com/Troll0ton/Alpha_blending/blob/main/hash.jpg
+[hash]: https://github.com/Troll0ton/Hash_table/tree/main/images/hash.jpg
 
 ---
 
@@ -29,49 +29,49 @@
 
 ![hf1][hf1]
 
-[hf1]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf1.png
+[hf1]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf1.png
 
 ### first symbol hash function
 Данная функция возвращает ASCII-код первого символа всей строки. Число коллизий уменьшено по сравнению с предыдущей функцией. По ниже приведенному графику несложно догадаться, что максимумы обусловлены лишь фонетическими особенностями исходных данных. Все зависит от распространнености слов, начинающихся с определенных букв, что при особенностях работы с текстом, приводит к большому числу коллизий в отдельных вёдрах.
 
 ![hf2][hf2]
 
-[hf2]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf2.png
+[hf2]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf2.png
 
 ### length hash function
 Данная хэш-функция возвращает длину получаемой строки. Заметим, что все записи лежат в самых первых вёдрах, а остальные - пусты. Это обусловлено тем, что длина слов во входном тексте (в языке) варьируется в этой области. Неэффективно, но все же лучше первой функции.  
 
 ![hf3][hf3]
 
-[hf3]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf3.png
+[hf3]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf3.png
 
 ### sum hash function
 Данная хэш-функция возвращает сумму всех ASCII-кодов символов, взятой по модулю размера хэш таблицы. Опять же, работа данной хэш функции сильно будет зависеть от длин слов в исходном тексте, и при больших размерах хэш-таблиц это привёдет к малой заселенности последних вёдер. Но пока это самая лучшая хэш-функция из представленных ранее.  
 
 ![hf4][hf4]
 
-[hf4]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf4.png
+[hf4]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf4.png
 
 ### right cycle rotate hash function
 Эти и последующие хэш-функции являются наиболее эффективными, так как они позволяют избежать совпадения возвращаемых значений для почти одинаковых слов, максимально неочевидны в получении результата. Изучение поведения работ таких хэш-функций требует полное исследование принципов, на которых они основаны. Но такие хэш-функции позволяют распределить записи равномерно по хэш-таблице.
 
 ![hf5][hf5]
 
-[hf5]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf5.png
+[hf5]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf5.png
 
 ### left cycle rotate hash function
 Данная функция не отличается идейно от предыдущей, но на проверяемых мною данных показала лучший результат. Прослеживается зависимость числа коллизий от выбора направления циклического вращения. (слева-направо и справа-налево соответсвенно - увеличивается число коллизий). Также заметно, что влияние циклических экстремумов на распределение уменьшено. 
 
 ![hf6][hf6]
 
-[hf6]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf6.png
+[hf6]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf6.png
 
 ### super secret hash function
 Проект включает и изучение работы собственно предложенной хэш-функции. Мною была выбрана полиномиальная хэш функция, которая основана на принципах хэш-суммы, но при этом вычисляется значение многочлена с заданными коэффициентами (символы в строке). Этот пример является лучшим из всех предыдущих, но и left cycle rotate hash function не сильно от него остает. 
 
 ![hf7][hf7]
 
-[hf7]: https://github.com/Troll0ton/Alpha_blending/blob/main/hf7.png
+[hf7]: https://github.com/Troll0ton/Hash_table/tree/main/images/hf7.png
 
 ---
 
@@ -97,7 +97,7 @@
 
 ![lol][me after hash table laba]
 
-[lol]: https://github.com/Troll0ton/Alpha_blending/blob/main/lol.jpg
+[lol]: https://github.com/Troll0ton/Hash_table/tree/main/images/lol.jpg
 ...
 
 
