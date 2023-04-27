@@ -134,14 +134,18 @@ Node *searchLine (char *line,
 
 int strcmpAvx (const char *s1, const char *s2)
 {
-    __m256i *str_1_vec = ( __m256i* )s1;
-    __m256i *str_2_vec = ( __m256i* )s2;
+    __m256i *s1_vector = ( __m256i* ) s1;
+    __m256i *s2_vector = ( __m256i* ) s2;
 
-    __m256i cmp = _mm256_cmpeq_epi8( *str_1_vec, *str_2_vec );
-    int mask = _mm256_movemask_epi8( cmp );
+    __m256i cmp = _mm256_cmpeq_epi8 (*s1_vector, *s2_vector);
+    int cmp_mask = _mm256_movemask_epi8 (cmp);
 
-    if( mask == 0xffffffff ) return 0;
-    else                     return 1;
+    if(cmp_mask == equal_mask) 
+    {
+        return 0;
+    }
+
+    return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -150,9 +154,9 @@ void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2)
 {
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
-
-    fillHashTable (text->buffer, text->size, &hash_table, superSecretHf, comp_funct);
-
+                                                        //superSecretHf _trollohash //Crc32hf
+    fillHashTable (text->buffer, text->size, &hash_table, Crc32hf, comp_funct);
+    
     //hashTableDump (hash_table);
 
     int total = 0;
@@ -164,8 +168,8 @@ void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2)
         while(curr_node)
         {
             for(int j = 0; j < num_of_searchs; j++) //Now search it three hundred times
-            {
-                unsigned hash_val = superSecretHf (curr_node->line); //Calculate key of current line in hash table
+            {                       //superSecretHf _trollohash //Crc32hf
+                unsigned hash_val = Crc32hf (curr_node->line) % hash_size; //Calculate key of current line in hash table
                 
                 Node *node = searchLine (curr_node->line, &hash_table, hash_val, comp_funct, &total);
 
@@ -275,7 +279,7 @@ void fillHashTable (char **buffer,
 
     for(unsigned int i = 0; i < size; i++)
     {
-        unsigned hash_val = calc_hash (buffer[i]);
+        unsigned hash_val = calc_hash (buffer[i]) % hash_size;
 
         if(searchLine (buffer[i], hash_table, hash_val, comp_funct, &total))
         {

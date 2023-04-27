@@ -24,6 +24,7 @@ unsigned int sumHf (char *line);
 unsigned int roundRightHf (char *line);
 unsigned int roundLeftHf (char *line);
 unsigned int superSecretHf (char *line);
+unsigned int Crc32hf (char *line);
 
 //-----------------------------------------------------------------------------
 

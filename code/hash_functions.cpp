@@ -89,3 +89,19 @@ unsigned int superSecretHf (char *line)
 }
 
 //-----------------------------------------------------------------------------
+
+unsigned int Crc32hf (char *line)
+{
+    __m256i *line_vector = (__m256i*) line;
+
+    int hash_sum = 0;
+
+    hash_sum = _mm_crc32_u64 (hash_sum, _mm256_extract_epi64 (*line_vector, 3));
+    hash_sum = _mm_crc32_u64 (hash_sum, _mm256_extract_epi64 (*line_vector, 2));
+    hash_sum = _mm_crc32_u64 (hash_sum, _mm256_extract_epi64 (*line_vector, 1));
+    hash_sum = _mm_crc32_u64 (hash_sum, _mm256_extract_epi64 (*line_vector, 0));
+    
+    return hash_sum;
+}
+
+//-----------------------------------------------------------------------------

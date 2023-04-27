@@ -5,6 +5,9 @@
         "string_view": "cpp",
         "utility": "cpp",
         "vector": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "string": "cpp",
+        "memory": "cpp",
+        "system_error": "cpp"
     }
 }
