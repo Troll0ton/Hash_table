@@ -60,16 +60,12 @@ void insertNode (char *line, Hash_table *hash_table, unsigned int hash_val);
 
 void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2));
 
-void fillHashTable (char **buffer, 
-                    unsigned int size,
-                    Hash_table *hash_table, 
-                    uint32_t (*calc_hash)(char *line),
-                    int (*comp_funct)(const char *s1, const char *s2));
+void fillHashTable (char      **buffer,     unsigned int size,
+                    Hash_table *hash_table, uint32_t   (*calc_hash)(char *line),
+                    int       (*comp_funct)(const char *s1, const char *s2));
 
-Node *searchLine (char *line,     
-                  Hash_table *hash_table, 
-                  unsigned int hash_val, 
-                  int (*comp_funct)(const char *s1, const char *s2),
+Node *searchLine (char *line,     Hash_table *hash_table, 
+                  unsigned int hash_val, int (*comp_funct)(const char *s1, const char *s2),
                   int *total);
 
 int strcmpAvx (const char *s1, const char *s2);
@@ -79,6 +75,8 @@ void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *
 void fillInDataGraph (Hash_table *hash_table, FILE *graph);
 
 void hashTableDump (Hash_table *hash_table);
+unsigned int calculateStdDeviation (Hash_table *hash_table);
+unsigned int calculateAverageValue (Hash_table *hash_table);
 
 //-----------------------------------------------------------------------------
 

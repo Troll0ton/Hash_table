@@ -291,3 +291,34 @@ void fillHashTable (char **buffer,
 }
 
 //-----------------------------------------------------------------------------
+
+unsigned int calculateStdDeviation (Hash_table *hash_table)
+{
+    unsigned int average_value = calculateAverageValue (hash_table);
+    unsigned int tmp_value     = 0;
+    
+    for(unsigned int i = 0; i < hash_table->size; i++)
+    {
+        tmp_value += pow (findListSize (&hash_table->bucket[i]) - average_value, 2);
+    } 
+
+    tmp_value /= hash_table->size;
+
+    return (sqrt (tmp_value));
+}
+
+//-----------------------------------------------------------------------------
+
+unsigned int calculateAverageValue (Hash_table *hash_table)
+{
+    unsigned int tmp_value = 0;
+    
+    for(unsigned int i = 0; i < hash_table->size; i++)
+    {
+        tmp_value += findListSize (&hash_table->bucket[i]);
+    } 
+
+    return (tmp_value /= hash_table->size);
+}
+
+//-----------------------------------------------------------------------------

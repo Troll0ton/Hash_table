@@ -15,6 +15,7 @@
 #include <locale.h>
 #include <limits.h>
 #include <stdint.h>
+#include <math.h>
 
 //-----------------------------------------------------------------------------
 
