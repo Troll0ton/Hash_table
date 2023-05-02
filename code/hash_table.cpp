@@ -155,7 +155,7 @@ void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2)
     Hash_table hash_table = { 0 };
     hashTableCtor (&hash_table, hash_size);
                                                         //superSecretHf _trollohash //Crc32hf
-    fillHashTable (text->buffer, text->size, &hash_table, Crc32hf, comp_funct);
+    fillHashTable (text->buffer, text->size, &hash_table, superSecretHf, comp_funct);
 
     //hashTableDump (hash_table);
 
@@ -169,7 +169,7 @@ void searchingAll (Text *text, int (*comp_funct)(const char *s1, const char *s2)
         {
             for(int j = 0; j < num_of_searchs; j++) //Now search it three hundred times
             {                       //superSecretHf _trollohash //Crc32hf
-                unsigned hash_val = Crc32hf (curr_node->line) % hash_size; //Calculate key of current line in hash table
+                unsigned hash_val = superSecretHf (curr_node->line) % hash_size; //Calculate key of current line in hash table
                 
                 Node *node = searchLine (curr_node->line, &hash_table, hash_val, comp_funct, &total);
 
