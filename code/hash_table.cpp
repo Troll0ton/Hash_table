@@ -199,7 +199,7 @@ void compareHashFunctions (Text *text)
         //lenHf,
         //sumHf,
         //roundRightHf,
-        //roundLeftHf,
+        roundLeftHf,
         superSecretHf,
     };
 
@@ -231,6 +231,8 @@ void drawOneFunctionGraph (Text *text, uint32_t (*calc_hash)(char *line), FILE *
 
     fillHashTable (text->buffer, text->size, &hash_table, calc_hash, strcmp);
     fillInDataGraph (&hash_table, graph);
+
+    printf ("Standart deviation: %u\n", calculateStdDeviation (&hash_table));
 
     hashTableDtor (&hash_table);
 }
@@ -274,7 +276,6 @@ void fillHashTable (char **buffer,
                     uint32_t (*calc_hash)(char *line),
                     int (*comp_funct)(const char *s1, const char *s2))
 {
-
     int total = 0;
 
     for(unsigned int i = 0; i < size; i++)
@@ -294,17 +295,25 @@ void fillHashTable (char **buffer,
 
 unsigned int calculateStdDeviation (Hash_table *hash_table)
 {
-    unsigned int average_value = calculateAverageValue (hash_table);
-    unsigned int tmp_value     = 0;
+    unsigned int average_value  = calculateAverageValue (hash_table);
+    unsigned int std_deviantion = 0;
+    unsigned int tmp_value      = 0;
+
+    printf ("Average value: %u\n", average_value);
     
     for(unsigned int i = 0; i < hash_table->size; i++)
     {
-        tmp_value += pow (findListSize (&hash_table->bucket[i]) - average_value, 2);
+        tmp_value = findListSize (&hash_table->bucket[i]) - average_value;
+        tmp_value *= tmp_value;
+        
+        std_deviantion += tmp_value;
     } 
 
-    tmp_value /= hash_table->size;
+    std_deviantion /= hash_table->size;
 
-    return (sqrt (tmp_value));
+    double tmp_val = (double) std_deviantion;
+
+    return (unsigned int) tmp_val;
 }
 
 //-----------------------------------------------------------------------------
@@ -318,7 +327,7 @@ unsigned int calculateAverageValue (Hash_table *hash_table)
         tmp_value += findListSize (&hash_table->bucket[i]);
     } 
 
-    return (tmp_value /= hash_table->size);
+    return (tmp_value / hash_table->size);
 }
 
 //-----------------------------------------------------------------------------

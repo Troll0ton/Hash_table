@@ -43,7 +43,7 @@ extern "C" unsigned int _trollohash (char *line);       // use our function
 //-----------------------------------------------------------------------------
 
 const int num_of_searchs = 300000;
-const int num_of_hf = 1;
+const int num_of_hf = 2;
 const unsigned int y_len = 20;
 const unsigned int equal_mask = 0xFFFFFFFF;
 
