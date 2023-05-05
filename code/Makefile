@@ -1,7 +1,28 @@
-compile: main.cpp
-	gcc -O2 -c -mavx -mavx512dq main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp text_utils.cpp
-	nasm -f elf64 -g hash_function_asm.s -o hash_function_asm.o
-	gcc -no-pie main.o hash_table.o hash_functions.o input_utils.o text_utils.o hash_function_asm.o
+CC=g++
+ASM=nasm
 
-run:
-	./app
+CFLAGS=-O2 -g -mavx -mavx512dq -Wall -c
+AFLAGS=-f elf64 -g
+IFLAGS=-no-pie
+
+SOURCES=main.cpp hash_table.cpp hash_functions.cpp input_utils.cpp text_utils.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+
+ASMSRC=hash_function_asm.s
+ASMOBJ=$(ASMSRC:.s=.o)
+
+EXECUTABLE=app
+
+all: $(SOURCES) $(ASMSRC) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) $(ASMOBJ)
+	$(CC) $(IFLAGS) $(OBJECTS) $(ASMOBJ) -o $@
+
+.cpp.o:
+	$(CC) $(IFLAGS) $(CFLAGS) $< -o $@
+
+.s.o:
+	$(ASM) $(IFLAGS) $(AFLAGS) $< -o $@
+
+clear:
+	rm -rf *.o app
