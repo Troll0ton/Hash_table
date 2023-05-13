@@ -9,14 +9,6 @@
 
 //-----------------------------------------------------------------------------
 
-enum Hash_pars
-{
-    HASH_CONST = 17,
-    SIZE_OF_HASH = 4,
-};
-
-//-----------------------------------------------------------------------------
-
 unsigned int constHf (char *line);
 unsigned int firstSymHf (char *line);
 unsigned int lenHf (char *line);

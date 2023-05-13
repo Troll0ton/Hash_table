@@ -21,8 +21,8 @@ int main()
 
     //compareHashFunctions (text);
     //searchingAll (text, strcmp);
-    //searchingAll (text_256, strcmp);
-    searchingAll (text_256, strcmpAvx);
+    searchingAll (text_256, strcmp);
+    //searchingAll (text_256, strcmpAvx);
 
     printf ("SUCCESS - process finished\n");
 
